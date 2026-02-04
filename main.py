@@ -19,6 +19,9 @@ while running:
         if event.type == pygame.QUIT:
             pygame.quit()
             raise SystemExit
+        if event.type == pygame.MOUSEBUTTONUP:
+            pos = pygame.mouse.get_pos()
+            board.setSelected(*boardDrawer.coordsToIndex(*pos))
         
     boardDrawer.drawBoard(screen)
 

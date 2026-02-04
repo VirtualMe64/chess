@@ -3,7 +3,9 @@ from board import Board
 import pygame
 
 class BoardDrawer:
-    def __init__(self, board : Board, width : int, height : int, whiteColor = "bisque", blackColor = "darkolivegreen4", piecesPath = "pieces"):
+    def __init__(self, board : Board, width : int, height : int,
+                 whiteColor = "bisque", blackColor = "darkolivegreen4", selectedColor = "gold",
+                 piecesPath = "pieces"):
         self.board = board
         self.width = width
         self.height = height
@@ -11,19 +13,22 @@ class BoardDrawer:
         self.squareHeight = height / 8
         self.whiteColor = whiteColor
         self.blackColor = blackColor
+        self.selectedColor = selectedColor
         self.piecesPath = piecesPath
 
     def drawBoard(self, screen):
-        for i, row in enumerate(self.board.board):
-            for j, piece in enumerate(row):
+        for y, row in enumerate(self.board.board):
+            for x, piece in enumerate(row):
                 rect = (
-                    j * self.squareWidth,
-                    (7 - i) * self.squareHeight,
+                    x * self.squareWidth,
+                    (7 - y) * self.squareHeight,
                     self.squareHeight + 1,
                     self.squareHeight + 1
                 )
-                parity = (i + j) % 2
+                parity = (y + x) % 2
                 color = self.whiteColor if parity else self.blackColor
+                if (x, y) == self.board.selectedIdx:
+                    color = self.selectedColor 
                 pygame.draw.rect(screen, color, rect)
 
                 if piece is not None:
@@ -33,3 +38,10 @@ class BoardDrawer:
                     pieceImage = pygame.image.load(expectedPath).convert_alpha()
                     pieceImage = pygame.transform.scale(pieceImage, (self.squareWidth, self.squareHeight))
                     screen.blit(pieceImage, rect)
+
+    def coordsToIndex(self, x, y):
+        xIdx = max(min(int(x / self.squareWidth), 7), 0)
+        yIdx = max(min(int(y / self.squareHeight), 7), 0)
+        yIdx = 7 - yIdx
+
+        return xIdx, yIdx
