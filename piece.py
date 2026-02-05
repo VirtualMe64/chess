@@ -13,7 +13,3 @@ class PieceType(Enum):
 class Piece:
     piece: PieceType
     color: bool
-
-    @property
-    def isWhite(self):
-        return self.color
